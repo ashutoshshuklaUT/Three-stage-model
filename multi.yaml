@@ -1,0 +1,39 @@
+---
+
+# Number of hurricanes
+tau: 10
+
+# Cost structure parameters for mitigation decisions
+fixed_cost: 25000
+variable_cost: 100000
+
+# Cost structure parameters for preparedness decisions
+td_cost: 80000
+
+# Cost structure parameters for preparedness operating budget
+operating_cost: 10000
+
+# False implies that we need to use generators from all operational nodes
+flexible_generation: True
+
+# Parameters for the power system model
+reference_bus: 313
+
+# Other parameters
+max_mit: 24
+max_prep: 12
+
+big_m: 50000
+
+restore_time: 50
+voll: 6000
+
+mit_level: 24
+prep_level: 12
+
+
+# Solver Parameters
+mip_gap: 0.025
+time_limit: 43200 
+solver_type: 'gurobi'
+solver_method: 2
