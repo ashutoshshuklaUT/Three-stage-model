@@ -35,8 +35,6 @@ class three_stage_model:
         self.restore_time = model_params["restore_time"]
         self.voll = model_params["voll"]
 
-	print(self.n_scenario, self.n_models)
-
         # Creating of node arc incidence matrix
         self.node_arc_incidence_matrix, self.node_edge_dictionary = node_matrix(self.main_input1, self.main_input2)
         
