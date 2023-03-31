@@ -25,15 +25,15 @@ max_prep: 12
 
 big_m: 50000
 
-restore_time: 48
+restore_time: 50
 voll: 6000
 
 mit_level: 24
-prep_level: 3
+prep_level: 12
 
 
 # Solver Parameters
 mip_gap: 0.025
-time_limit: 43200 
+time_limit: 36000 
 solver_type: 'gurobi'
 solver_method: 2
