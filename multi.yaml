@@ -25,11 +25,11 @@ max_prep: 12
 
 big_m: 50000
 
-restore_time: 50
+restore_time: 48
 voll: 6000
 
 mit_level: 24
-prep_level: 12
+prep_level: 3
 
 
 # Solver Parameters
