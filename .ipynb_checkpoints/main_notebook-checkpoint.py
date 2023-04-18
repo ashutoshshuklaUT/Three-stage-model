@@ -46,12 +46,8 @@ parser.add_argument('--prep_level', type=int, required=False, help = "Preparedne
 parser.add_argument('--mip_gap', type=float, required=False, help = "MIP-Gap")
 parser.add_argument('--time_limit', type=int, required=False, help = "Solver time")
 
-parser.add_argument('--mitigation_budget', type=int, required=False, help = "If there is a mitigation budget")
+
 parser.add_argument('--first_stage_binary', type=str, required=False, help = "is first-stage binary: true or false")
-
-
-# In[ ]:
-
 
 # Parse the argument
 args = parser.parse_args()
@@ -103,10 +99,6 @@ if args.machine == "tacc":
 else:
     params["path_to_output"] = os.getcwd() + "/output/" + args.run_name + "/"        
 
-
-# In[ ]:
-
-
 params["path_to_input"] = os.getcwd() + "/data/192_Scenario/"
 
 if os.path.exists(params["path_to_output"]):
@@ -131,9 +123,6 @@ base_model.model.setParam("TimeLimit", params["time_limit"])
 base_model.model.setParam("Method", params["solver_method"])
 base_model.model.write(params["path_to_output"] + "solution.sol")    
 base_model.model.optimize()
-
-if args.mitigation_budget:
-    base_model.model.addConstr(base_model.i_mitigation <= args.mitigation_budget)
 
 
 # In[ ]:
