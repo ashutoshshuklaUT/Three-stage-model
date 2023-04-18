@@ -25,6 +25,7 @@ model_scenarios = return_model_scenarios()
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--run_name', type=str, required=True, help="Name of the run")
+parser.add_argument('--machine', type=str, required=True, help = "Machine Type")
 
 parser.add_argument('--fixed_cost', type=int, required=False, help="Fixed cost of hardening")
 parser.add_argument('--variable_cost', type=int, required=False, help="Variable cost of hardening")
@@ -92,15 +93,24 @@ if args.first_stage_binary:
         params["first_stage_binary"] = True
     else:
         params["first_stage_binary"] = False
-    
+
+if args.machine == "tacc":
+    params["path_to_output"] = "/work2/07346/ashukla/stampede2/ThreeStageModel/output/" + args.run_name + "/"
+else:
+    params["path_to_output"] = os.getcwd() + "/output/" + args.run_name + "/"        
+
 params["path_to_input"] = os.getcwd() + "/data/192_Scenario/"
-params["path_to_output"] = os.getcwd() + "/output/" + args.run_name
 
 if os.path.exists(params["path_to_output"]):
     print("The path exisits. Try a new directory name")
     sys.exit()
 else:
     os.mkdir(params["path_to_output"])
+    
+print("Path to output is:\t", params["path_to_output"])
+print("Creating model instance.")
+print("The number of mini-brent models is\t", len(model_scenarios.keys()))
+print("Number of scenarios per model is\t", len(model_scenarios[0]))
 
 
 # In[ ]:
