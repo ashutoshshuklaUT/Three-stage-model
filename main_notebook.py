@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# In[1]:
+
+
 import os
 import sys
 import yaml
 import json
 import argparse
-import gurobipy as gp
-from gurobipy import GRB
 from utils import *
 from three_stage_model import *
 
@@ -17,9 +18,13 @@ with open(r'multi.yaml') as file:
     
 model_scenarios = return_model_scenarios()
 
+
+# In[ ]:
+
+
 parser = argparse.ArgumentParser()
+
 parser.add_argument('--run_name', type=str, required=True, help="Name of the run")
-parser.add_argument('--machine', type=str, required=True, help = "Machine Type")
 
 parser.add_argument('--fixed_cost', type=int, required=False, help="Fixed cost of hardening")
 parser.add_argument('--variable_cost', type=int, required=False, help="Variable cost of hardening")
@@ -39,6 +44,9 @@ parser.add_argument('--prep_level', type=int, required=False, help = "Preparedne
 
 parser.add_argument('--mip_gap', type=float, required=False, help = "MIP-Gap")
 parser.add_argument('--time_limit', type=int, required=False, help = "Solver time")
+
+
+parser.add_argument('--first_stage_binary', type=str, required=False, help = "is first-stage binary: true or false")
 
 # Parse the argument
 args = parser.parse_args()
@@ -64,7 +72,7 @@ if args.flexible_generation:
         params["flexible_generation"] = True
     else:
         params["flexible_generation"] = False
-        
+
 if args.max_mit:
     params["max_mit"] = args.max_mit
 if args.mit_level:
@@ -78,13 +86,15 @@ if args.mip_gap:
     params["mip_gap"] = args.mip_gap
 if args.time_limit:
     params["time_limit"] = args.time_limit
-
-if args.machine == "tacc":
-    params["path_to_output"] = "/work2/07346/ashukla/stampede2/ThreeStageModel/output/" + args.run_name + "/"
-else:
-    params["path_to_output"] = os.getcwd() + "/output/" + args.run_name + "/"
     
-params["path_to_input"] = os.getcwd() + "/data/48_Scenario/"
+if args.first_stage_binary:
+    if args.first_stage_binary == "true":
+        params["first_stage_binary"] = True
+    else:
+        params["first_stage_binary"] = False
+    
+params["path_to_input"] = os.getcwd() + "/data/192_Scenario/"
+params["path_to_output"] = os.getcwd() + "/output/" + args.run_name
 
 if os.path.exists(params["path_to_output"]):
     print("The path exisits. Try a new directory name")
@@ -92,24 +102,27 @@ if os.path.exists(params["path_to_output"]):
 else:
     os.mkdir(params["path_to_output"])
 
-print("Path to output is:\t", params["path_to_output"])
-print("Creating model instance.")
-print("The number of mini-brent models is\t", len(model_scenarios.keys()))
-print("Number of scenarios per model is\t", len(model_scenarios[0]))
+
+# In[ ]:
+
 
 base_model = three_stage_model(params, model_scenarios)
-base_model.model.setParam("LogFile", params["path_to_output"] + "gurobi_log")
+base_model.model.setParam("LogFile", params["path_to_output"] + "log")
 base_model.model.setParam("MIPGap", params["mip_gap"])
 base_model.model.setParam("TimeLimit", params["time_limit"])
-base_model.model.setParam("Method", params["solver_method"])    
-print("Starting the solve process")
+base_model.model.setParam("Method", params["solver_method"])
+base_model.model.write(params["path_to_output"] + "solution.sol")    
 base_model.model.optimize()
-base_model.model.write(params["path_to_output"] + "solution.sol")
+
+
+# In[ ]:
+
 
 with open(params["path_to_output"] + 'model_params.json', 'w') as fp:
+    del params["input1"]
+    del params["input2"]
     json.dump(params, fp)
     
 with open(params["path_to_output"] + 'model_scenarios.json', 'w') as fp:
     json.dump(model_scenarios, fp)
 
-print("Process completed successfully")

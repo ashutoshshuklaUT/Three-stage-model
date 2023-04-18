@@ -18,19 +18,13 @@ def prepare_input(path_str):
     return input1, input2
 
 def return_model_scenarios():
-
-    # 48 scenario setup
-    directions = ["w", "wnw", "nw", "nnw", "n", "nne"]
+    directions = ["wsw", "w", "wnw", "nw", "nnw", "n", "nne", "ne"]
     categories = ["2", "3", "4", "5"]
-    forward_speeds = ["05", "10"]
-    
-    # 8 scenario setup
+    forward_speeds = ["05", "10", "15", "25"]
     model_scenarios = {}
     counter = 0
     for i in directions:
-        #for j in range(len(categories)):
         for j in range(len(categories)-1):
-            #for k in range(len(forward_speeds)-2):
             for k in range(len(forward_speeds)-1):
                 lister = []
                 lister.append("max_flood_level_" + i +"_" + categories[j] + "_" + forward_speeds[k])
