@@ -1,0 +1,7 @@
+
+Gurobi 10.0.1 (mac64[arm]) logging started Wed Apr 19 16:11:36 2023
+
+Set parameter LogFile to value "/Users/ashutoshshukla/Desktop/ThreeStageModel/output/temp2/log"
+Set parameter MIPGap to value 0.96
+Set parameter TimeLimit to value 36000
+Set parameter Method to value 2

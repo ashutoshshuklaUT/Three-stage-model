@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[1]:
-
-
 import os
 import sys
 import yaml
@@ -18,10 +16,7 @@ with open(r'multi.yaml') as file:
     
 model_scenarios = return_model_scenarios()
 
-
 # In[ ]:
-
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--run_name', type=str, required=True, help="Name of the run")
@@ -103,12 +98,11 @@ if args.machine == "tacc":
 else:
     params["path_to_output"] = os.getcwd() + "/output/" + args.run_name + "/"        
 
+params["path_to_output"] = os.getcwd() + "/output/" + args.run_name + "/"        
+
 
 # In[ ]:
-
-
 params["path_to_input"] = os.getcwd() + "/data/192_Scenario/"
-
 if os.path.exists(params["path_to_output"]):
     print("The path exisits. Try a new directory name")
     sys.exit()
@@ -120,25 +114,19 @@ print("Creating model instance.")
 print("The number of mini-brent models is\t", len(model_scenarios.keys()))
 print("Number of scenarios per model is\t", len(model_scenarios[0]))
 
-
 # In[ ]:
-
-
 base_model = three_stage_model(params, model_scenarios)
+if args.mitigation_budget:
+    base_model.model.addConstr(base_model.i_mitigation <= args.mitigation_budget)
+
 base_model.model.setParam("LogFile", params["path_to_output"] + "log")
 base_model.model.setParam("MIPGap", params["mip_gap"])
 base_model.model.setParam("TimeLimit", params["time_limit"])
 base_model.model.setParam("Method", params["solver_method"])
-base_model.model.write(params["path_to_output"] + "solution.sol")    
 base_model.model.optimize()
-
-if args.mitigation_budget:
-    base_model.model.addConstr(base_model.i_mitigation <= args.mitigation_budget)
-
+base_model.model.write(params["path_to_output"] + "solution.sol")    
 
 # In[ ]:
-
-
 with open(params["path_to_output"] + 'model_params.json', 'w') as fp:
     del params["input1"]
     del params["input2"]
@@ -146,4 +134,3 @@ with open(params["path_to_output"] + 'model_params.json', 'w') as fp:
     
 with open(params["path_to_output"] + 'model_scenarios.json', 'w') as fp:
     json.dump(model_scenarios, fp)
-
