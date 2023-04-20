@@ -98,9 +98,6 @@ if args.machine == "tacc":
 else:
     params["path_to_output"] = os.getcwd() + "/output/" + args.run_name + "/"        
 
-params["path_to_output"] = os.getcwd() + "/output/" + args.run_name + "/"        
-
-
 # In[ ]:
 params["path_to_input"] = os.getcwd() + "/data/192_Scenario/"
 if os.path.exists(params["path_to_output"]):
@@ -128,8 +125,6 @@ base_model.model.write(params["path_to_output"] + "solution.sol")
 
 # In[ ]:
 with open(params["path_to_output"] + 'model_params.json', 'w') as fp:
-    del params["input1"]
-    del params["input2"]
     json.dump(params, fp)
     
 with open(params["path_to_output"] + 'model_scenarios.json', 'w') as fp:

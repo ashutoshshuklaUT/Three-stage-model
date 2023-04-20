@@ -98,7 +98,7 @@ class three_stage_model:
         self.model.addConstrs((self.prep_level*self.x_prep.sum('*', m) <= self.td_units for m in range(self.n_models)))
 
     def stage_one_binary(self):
-        self.model.addConstrs((self.mit_level*self.x_mit[i] == self.substation_info[i] for i in self.substation_info))
+        self.model.addConstrs((self.mit_level*self.x_mit[i] == self.substation_info[i]*self.y_mit[i] for i in self.substation_info))
 
     def linking_constraints(self):
         for m in range(self.n_models):
