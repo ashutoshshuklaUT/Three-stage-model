@@ -46,8 +46,6 @@ parser.add_argument('--first_stage_binary', type=str, required=False, help = "is
 
 
 # In[ ]:
-
-
 # Parse the argument
 args = parser.parse_args()
 
@@ -120,6 +118,7 @@ base_model.model.setParam("LogFile", params["path_to_output"] + "log")
 base_model.model.setParam("MIPGap", params["mip_gap"])
 base_model.model.setParam("TimeLimit", params["time_limit"])
 base_model.model.setParam("Method", params["solver_method"])
+base_model.model.setParam("NodeFileStart", 0.5)
 base_model.model.optimize()
 base_model.model.write(params["path_to_output"] + "solution.sol")    
 

@@ -23,7 +23,7 @@ reference_bus: 313
 
 # Other parameters
 max_mit: 24
-max_prep: 12
+max_prep: 6
 
 big_m: 50000
 

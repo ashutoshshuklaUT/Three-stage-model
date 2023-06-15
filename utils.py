@@ -18,7 +18,7 @@ def prepare_input(path_str):
     return input1, input2
 
 def return_model_scenarios():
-    directions = ["wsw", "w", "wnw", "nw", "nnw", "n", "nne", "ne"]
+    directions = ["w", "wnw", "nw", "nnw", "n", "nne"]
     categories = ["2", "3", "4", "5"]
     forward_speeds = ["05", "10", "15", "25"]
     model_scenarios = {}
