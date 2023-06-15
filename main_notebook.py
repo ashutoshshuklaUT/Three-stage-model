@@ -112,13 +112,16 @@ print("Number of scenarios per model is\t", len(model_scenarios[0]))
 # In[ ]:
 base_model = three_stage_model(params, model_scenarios)
 if args.mitigation_budget:
-    base_model.model.addConstr(base_model.i_mitigation <= args.mitigation_budget)
+    base_model.model.addConstr(base_model.i_mitigation + base_model.i_preparedness <= args.mitigation_budget)
 
 base_model.model.setParam("LogFile", params["path_to_output"] + "log")
 base_model.model.setParam("MIPGap", params["mip_gap"])
 base_model.model.setParam("TimeLimit", params["time_limit"])
 base_model.model.setParam("Method", params["solver_method"])
+
 base_model.model.setParam("NodeFileStart", 0.5)
+base_model.model.setParam("Threads", 10)  
+
 base_model.model.optimize()
 base_model.model.write(params["path_to_output"] + "solution.sol")    
 

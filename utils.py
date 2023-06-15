@@ -54,7 +54,6 @@ def node_matrix(input1, input2):
         tail = input1.loc[input2.iloc[i,2], "bus_index"] 
         node_arc_incidence_matrix[head,i] = 1           # Indicates outgoing flux
         node_arc_incidence_matrix[tail,i] = -1          # Indicates incoming flux
-
     node_edge_dictionary = {}
     for i in range(len(input2)):
         head = input1.loc[input2.iloc[i,1], "bus_index"]
@@ -64,12 +63,10 @@ def node_matrix(input1, input2):
         else:
             node_edge_dictionary[head] = []
             node_edge_dictionary[head].append(i)
-
         if tail in node_edge_dictionary.keys():
             node_edge_dictionary[tail].append(i)
         else:
             node_edge_dictionary[tail] = []
             node_edge_dictionary[tail].append(i)
-
     return node_arc_incidence_matrix, node_edge_dictionary
 
