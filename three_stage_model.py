@@ -72,25 +72,25 @@ class three_stage_model:
         self.i_mitigation = self.model.addVar(vtype=GRB.CONTINUOUS, lb=0, ub=GRB.INFINITY, name="i_mitigation")
         self.i_preparedness = self.model.addVar(vtype=GRB.CONTINUOUS, lb=0, ub=GRB.INFINITY, name="i_preparedness")
 
-        self.td_units = self.model.addVar(vtype=GRB.INTEGER, lb=0, ub=GRB.INFINITY)
+        self.td_units = self.model.addVar(vtype=GRB.INTEGER, lb=0, ub=GRB.INFINITY, name="td_units")
 
-        self.y_mit = self.model.addVars(self.substations, vtype=GRB.BINARY)
-        self.x_mit = self.model.addVars(self.substations, lb=0, ub=int(self.max_mit/self.mit_level), vtype=GRB.INTEGER)
+        self.y_mit = self.model.addVars(self.substations, vtype=GRB.BINARY, name="y_mit")
+        self.x_mit = self.model.addVars(self.substations, lb=0, ub=int(self.max_mit/self.mit_level), vtype=GRB.INTEGER, name="x_mit")
         
-        self.y_prep = self.model.addVars(self.substations, np.arange(self.n_models), vtype=GRB.BINARY)
-        self.x_prep = self.model.addVars(self.substations, np.arange(self.n_models), lb=0, ub=int(self.max_prep/self.prep_level), vtype=GRB.INTEGER)
+        self.y_prep = self.model.addVars(self.substations, np.arange(self.n_models), vtype=GRB.BINARY, name="y_prep")
+        self.x_prep = self.model.addVars(self.substations, np.arange(self.n_models), lb=0, ub=int(self.max_prep/self.prep_level), vtype=GRB.INTEGER, name="x_prep")
         
-        self.max_x = self.model.addVars(self.substations, np.arange(self.n_models), vtype=GRB.INTEGER)
+        self.max_x = self.model.addVars(self.substations, np.arange(self.n_models), vtype=GRB.INTEGER, name="max_x")
 
-        self.z = self.model.addVars(np.arange(self.n_buses), np.arange(self.n_scenario), np.arange(self.n_models), vtype=GRB.BINARY)
-        self.alpha = self.model.addVars(np.arange(self.n_buses), np.arange(self.n_scenario), np.arange(self.n_models), vtype=GRB.BINARY)
+        self.z = self.model.addVars(np.arange(self.n_buses), np.arange(self.n_scenario), np.arange(self.n_models), vtype=GRB.BINARY, name="z")
+        self.alpha = self.model.addVars(np.arange(self.n_buses), np.arange(self.n_scenario), np.arange(self.n_models), vtype=GRB.BINARY, name="alpha")
 
-        self.g = self.model.addVars(np.arange(self.n_buses), np.arange(self.n_scenario), np.arange(self.n_models), lb=0, ub=GRB.INFINITY, vtype=GRB.CONTINUOUS)
-        self.s = self.model.addVars(np.arange(self.n_buses), np.arange(self.n_scenario), np.arange(self.n_models), lb=0, ub=GRB.INFINITY, vtype=GRB.CONTINUOUS)
-        self.theta = self.model.addVars(np.arange(self.n_buses), np.arange(self.n_scenario), np.arange(self.n_models), lb=-3.14, ub=3.14, vtype=GRB.CONTINUOUS)
+        self.g = self.model.addVars(np.arange(self.n_buses), np.arange(self.n_scenario), np.arange(self.n_models), lb=0, ub=GRB.INFINITY, vtype=GRB.CONTINUOUS, name="g")
+        self.s = self.model.addVars(np.arange(self.n_buses), np.arange(self.n_scenario), np.arange(self.n_models), lb=0, ub=GRB.INFINITY, vtype=GRB.CONTINUOUS, name="s")
+        self.theta = self.model.addVars(np.arange(self.n_buses), np.arange(self.n_scenario), np.arange(self.n_models), lb=-3.14, ub=3.14, vtype=GRB.CONTINUOUS, name="theta")
         
-        self.rho = self.model.addVars(np.arange(self.n_scenario), np.arange(self.n_models), lb=0, ub=GRB.INFINITY, vtype=GRB.CONTINUOUS)
-        self.edge = self.model.addVars(np.arange(self.n_branches), np.arange(self.n_scenario), np.arange(self.n_models), lb= -GRB.INFINITY, ub=GRB.INFINITY, vtype=GRB.CONTINUOUS)
+        self.rho = self.model.addVars(np.arange(self.n_scenario), np.arange(self.n_models), lb=0, ub=GRB.INFINITY, vtype=GRB.CONTINUOUS, name="rho")
+        self.edge = self.model.addVars(np.arange(self.n_branches), np.arange(self.n_scenario), np.arange(self.n_models), lb= -GRB.INFINITY, ub=GRB.INFINITY, vtype=GRB.CONTINUOUS, name="edge")
 
     def stage_one_constraints(self):
         self.model.addConstrs((self.mit_level*self.x_mit[i] <= self.max_mit*self.y_mit[i] for i in self.substation_info))

@@ -9,6 +9,7 @@ import json
 import argparse
 from utils import *
 from three_stage_model import *
+from IPython import embed
 
 # Read model parameters
 with open(r'multi.yaml') as file:
@@ -43,6 +44,15 @@ parser.add_argument('--time_limit', type=int, required=False, help = "Solver tim
 
 parser.add_argument('--mitigation_budget', type=int, required=False, help = "If there is a mitigation budget")
 parser.add_argument('--first_stage_binary', type=str, required=False, help = "is first-stage binary: true or false")
+
+################## new arguements #########################
+parser.add_argument('--coordination', type=str, required=False, help = "Is it a coordination model to be solved")
+parser.add_argument('--initial_sol_path', type=str, required=False, help = "path of the initial solution")
+parser.add_argument('--mip_focus', type=str, required=False, help = "mip focus strategy")
+parser.add_argument('--cut_level', type=str, required=False, help = "cut aggresiveness")
+
+
+
 
 
 # In[ ]:
@@ -114,6 +124,51 @@ base_model = three_stage_model(params, model_scenarios)
 if args.mitigation_budget:
     base_model.model.addConstr(base_model.i_mitigation + base_model.i_preparedness <= args.mitigation_budget)
 
+######################################## Coordination ####################################
+if args.coordination:
+    params["coordination"] = args.coordination
+    prep_constraint = base_model.model.addConstr(base_model.i_preparedness <= 0)
+    base_model.model.setParam("LogFile", params["path_to_output"] + "coordination_log_" + str(params["voll"]))
+    base_model.model.setParam("MIPGap", params["mip_gap"])
+    base_model.model.setParam("TimeLimit", 36000)
+    base_model.model.setParam("Method", params["solver_method"])
+    base_model.model.optimize()
+    params["coordination_i_mitigation"] = base_model.i_mitigation.X
+    params["coordination_i_preparedness"] = base_model.i_preparedness.X
+    params["coordination_i_oc"] = base_model.i_oc.X
+    params["coordination_i_voll"] = base_model.i_voll.X
+    base_model.model.remove(prep_constraint)
+    for i in base_model.substation_info:
+        if base_model.x_mit[i].X > 0:
+            base_model.model.addConstr(base_model.x_mit[i] == base_model.x_mit[i].X)
+            base_model.model.addConstr(base_model.y_mit[i] == 1)
+        else:
+            base_model.model.addConstr(base_model.x_mit[i] == 0)
+            base_model.model.addConstr(base_model.y_mit[i] == 0)
+
+if args.initial_sol_path:
+    params["initial_sol_path"] = args.initial_sol_path
+    base_model.model.update()
+    base_model.model.read(args.initial_sol_path)
+    base_model.model.update()
+
+    temp_here = 0
+    for sub_id in base_model.substation_info:
+        temp = base_model.model.getVarByName('x_mit[' +  str(sub_id) + ']').Start
+        if temp > 0:
+            print("Substation ", sub_id, " has hardening ", temp)
+            temp_here = temp_here + params["fixed_cost"] + params["mit_level"]*temp*params["variable_cost"]
+            print("Updated Mitigation Cost: ", temp_here/1e6)
+    print("Total Budget\t", temp_here/1e6)
+    
+if args.mip_focus:
+    params["mip_focus"] = int(args.mip_focus)
+    base_model.model.setParam("MIPFocus", params["mip_focus"])
+
+if args.cut_level:
+    params["cut_level"] = int(args.cut_level)
+    base_model.model.setParam("Cuts", params["cut_level"])
+    
 base_model.model.setParam("LogFile", params["path_to_output"] + "log")
 base_model.model.setParam("MIPGap", params["mip_gap"])
 base_model.model.setParam("TimeLimit", params["time_limit"])
@@ -124,6 +179,11 @@ base_model.model.setParam("Threads", 10)
 
 base_model.model.optimize()
 base_model.model.write(params["path_to_output"] + "solution.sol")    
+
+params["i_mitigation"] = base_model.i_mitigation.X
+params["i_preparedness"] = base_model.i_preparedness.X
+params["i_oc"] = base_model.i_oc.X
+params["i_voll"] = base_model.i_voll.X
 
 # In[ ]:
 with open(params["path_to_output"] + 'model_params.json', 'w') as fp:
