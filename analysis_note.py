@@ -1,21 +1,18 @@
+# Reads from the solution file and prints/accesses required information.
+
 import os
 import pandas as pd
 import json
 from utils import *
 from three_stage_model import *
 
-pd.set_option('display.width', 1000)
-pd.set_option('display.max_columns', 1000)
 prep_tech = [0,6,12,18,24]
 value_lister = []
 
 for prep_value in prep_tech:
-    print("This is value of \t", prep_value)
     main_path = "/work2/07346/ashukla/stampede2/ThreeStageModel/output/prep_" + str(prep_value) + "/"
-
     with open(main_path + "model_params.json", 'r') as f:
-        params = json.load(f)
-        
+        params = json.load(f)        
     with open(main_path + "model_scenarios.json", 'r') as f:
         model_scenarios_string = json.load(f)
 
@@ -23,20 +20,12 @@ for prep_value in prep_tech:
     for k in model_scenarios_string:
         model_scenarios[int(k)] = model_scenarios_string[k]
 
-
     params["path_to_input"] = os.getcwd() + "/data/192_Scenario/"
     base_model = three_stage_model(params, model_scenarios)
     base_model.model.update()
     sol_path = main_path + "solution.sol"
     base_model.model.read(sol_path)
     base_model.model.update()
-
-
-    print(base_model.model.getVarByName('i_oc').Start/1e6,
-        base_model.model.getVarByName('i_mitigation').Start/1e6,
-        base_model.model.getVarByName('i_voll').Start/1e6,
-        base_model.model.getVarByName('i_preparedness').Start/1e6)
-
 
     value_lister.append((base_model.model.getVarByName('i_oc').Start/1e6,
                          base_model.model.getVarByName('i_mitigation').Start/1e6,
