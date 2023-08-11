@@ -1,5 +1,8 @@
 from utils import *
 import pandas as pd
+from three_stage_model import *
+import json
+import os
 
 def get_df_for_heuristic():
     df = pd.read_csv("/home1/07346/ashukla/ThreeStageModel/data/192_Scenario/Final_Input1.csv")
@@ -50,7 +53,7 @@ def compute_load_shed_no_measure(flood_info, df_sub, model_scenarios, params, df
     main_df.columns = ["voll_million", "max_flood"]
     main_df["prepare_million"] = 1e12
     main_df["mitigate_million"] = 1e12
-    """Every substation in main_df is flooded atleast once"""
+    """Note that: Every substation in main_df is flooded atleast once"""
     for i in main_df.index:
         hardening_cost = params["fixed_cost"] + params["variable_cost"]*main_df.loc[i, "max_flood"]
         main_df.loc[i, "mitigate_million"] = round(hardening_cost/1e6, 3)
@@ -65,11 +68,10 @@ def prep_cost_computer(prep_enough, flood_info, params, model_scenarios):
         temp = temp/len(model_scenarios.keys())
         temp = temp*params["operating_cost"]*params["tau"]
         prep_enough.loc[i, "prepare_million"] = round((prep_enough.loc[i, "max_flood"]*params["td_cost"] + temp)/1e6, 3)
-    
     return prep_enough
 
 def mit_prep_fixable_substation(mit_enough, df_flood, params):
-    temp_df = df_flood.loc[mit_enough.index,:].copy()
+    temp_df = df_flood.loc[mit_enough.index,:].copy() # only mit indices will be present
     temp_df = temp_df[(temp_df > 0) & (temp_df <= params["prep_level"])]
     temp_df = temp_df.dropna(thresh=1)
     can_be_fixed = list(temp_df.index)
@@ -122,6 +124,7 @@ def heuristic(df_type, flood_info, df_flood, model_scenarios, params):
             heuristic_dictionary[i]["y_mit"] = 0
             for j in flood_info[i]:
                 if flood_info[i][j] > 0:
+                    # here we check that for flooded substation, can it be protected with tiger dams
                     flag = 0
                     max_preventable_flooding = 0
                     for k in model_scenarios[j]:
@@ -130,10 +133,12 @@ def heuristic(df_type, flood_info, df_flood, model_scenarios, params):
                             flag = 1
                             if flood_level > max_preventable_flooding:
                                 max_preventable_flooding = flood_level
+                    # So if in any one scenario, flooding can be prevented with tiger dams, we will protect
                     if flag == 1:
                         heuristic_dictionary[i]["p_" + str(j)] = max_preventable_flooding
                         heuristic_dictionary[i]["q_" + str(j)] = 1
                     else:
+                        # in this case, there is flooding but it cannot be prevented
                         heuristic_dictionary[i]["p_" + str(j)] = 0
                         heuristic_dictionary[i]["q_" + str(j)] = 0   
                 else:
@@ -167,3 +172,114 @@ def tighten_model(df_sub, df_flood, flood_info, model_scenarios):
         else:
             continue
     return heuristic_dictionary
+
+def final_heuristic(flood_info, df_sub, model_scenarios, params, df_flood):
+    main_df = compute_load_shed_no_measure(flood_info, df_sub, model_scenarios, params, df_flood)
+    prep_enough = main_df[(main_df["max_flood"] <= params["prep_level"])].copy()
+    mit_enough = main_df[(main_df["max_flood"] > params["prep_level"])].copy()
+    prep_enough = prep_enough[['voll_million', 'prepare_million', 'mitigate_million', 'max_flood']]
+    mit_enough = mit_enough[['voll_million', 'prepare_million', 'mitigate_million', 'max_flood']]
+    prep_enough = prep_cost_computer(prep_enough, flood_info, params, model_scenarios)
+    mitigate, mit_enough = mit_cost_computer(mit_enough, params, flood_info, model_scenarios, df_flood, df_sub)
+    prep_dict = heuristic(prep_enough, flood_info, df_flood, model_scenarios, params)
+    mit_dict = heuristic(mit_enough, flood_info, df_flood, model_scenarios, params)
+    rest_dict = tighten_model(df_sub, df_flood, flood_info, model_scenarios)
+    return prep_dict, mit_dict, rest_dict
+
+def opt_solution_reader(model_scenarios, voll_value, path_str, df_flood):
+    main_path = path_str + str(voll_value) + "/"
+    with open(main_path + "model_params.json", 'r') as f:
+        params = json.load(f)   
+    params["path_to_input"] = os.getcwd() + "/data/192_Scenario/"
+    base_model = three_stage_model(params, model_scenarios)
+    base_model.model.update()
+    sol_path = main_path + "solution.sol"
+    base_model.model.read(sol_path)
+    base_model.model.update()
+    
+    hardening_decisions = {}
+    tiger_dam_decisions = {}
+    
+    for sub_id in df_flood.index:
+        hardening_decisions[sub_id] = int(base_model.x_mit[sub_id].Start*params["mit_level"])
+    for sub_id in df_flood.index:
+        for j in model_scenarios:
+            tiger_dam_decisions[str(sub_id) + "_" + str(j)] = int(base_model.x_prep[sub_id,j].Start*params["prep_level"])
+    
+    return hardening_decisions, tiger_dam_decisions
+
+def post_process_heuristic_output(voll_list, flood_info, df_sub, model_scenarios, params, df_flood):
+    heuristic_solution_dictionary = {}
+    for voll_value in voll_list:
+        params["voll"] = voll_value
+        prep_dict, mit_dict, rest_dict = final_heuristic(flood_info, df_sub, model_scenarios, params, df_flood)    
+        h = {}
+        for i in df_flood.index:
+            if i in prep_dict:
+                h[i] = int(prep_dict[i]['x_mit'])
+            else:
+                h[i] = int(mit_dict[i]['x_mit'])
+        t = {}
+        for i in df_flood.index:
+            for j in model_scenarios:
+                if i in prep_dict:
+                    t[str(i) + "_" + str(j)] = prep_dict[i]["p_" + str(j)]
+                else:
+                    t[str(i) + "_" + str(j)] = mit_dict[i]["p_" + str(j)]
+        heuristic_solution_dictionary[voll_value] = [h,t]
+    return heuristic_solution_dictionary, rest_dict
+
+def heuristic_hardening_score(voll_list, df_flood, heuristic_solution_dictionary, optimization_solution_list):
+    df_list = []
+    for voll in voll_list:
+        zeros = 0
+        match = 0
+        unmatch = 0
+        for i in df_flood.index:
+            t1 = heuristic_solution_dictionary[voll][0][i]
+            t2 = optimization_solution_list[voll][0][i]    
+            if (t1 == t2):
+                if t1 == 0:
+                    zeros = zeros + 1
+                else:
+                    match = match + 1
+            else:
+                unmatch = unmatch + 1
+        df_list.append([voll, zeros, match, unmatch])
+    df_list = pd.DataFrame(df_list)
+    df_list.columns = ["voll", "zeros", "match", "unmatch"]
+    df_list = df_list.set_index("voll")
+    return df_list
+
+def heuristic_td_score(voll_list, df_flood, model_scenarios, heuristic_solution, optimization_list):
+    df_list = []
+    mismatch = {}
+    for voll in voll_list:
+        mismatch[voll] = {}
+        zeros = 0
+        match = 0
+        unmatch = 0
+        for i in df_flood.index:
+            for j in model_scenarios:
+                t1 = heuristic_solution[voll][1][str(i) + "_" + str(j)]
+                t2 = optimization_list[voll][1][str(i) + "_" + str(j)]    
+                if (t1 == t2):
+                    if t1 == 0:
+                        zeros = zeros + 1
+                    else:
+                        match = match + 1
+                else:
+                    if ((t1 > 0) & (t1 <= 6) & (t2 == 6)):
+                        match = match + 1
+                    else:
+                        if i not in mismatch[voll]:
+                            mismatch[voll][i] = {}
+                            mismatch[voll][i][j] = [t1,t2]
+                        else:
+                            mismatch[voll][i][j] = [t1,t2]
+                        unmatch = unmatch + 1
+        df_list.append([voll, zeros, match, unmatch])
+    df_list = pd.DataFrame(df_list)
+    df_list.columns = ["voll", "zeros", "match", "unmatch"]
+    df_list = df_list.set_index("voll")
+    return df_list, mismatch

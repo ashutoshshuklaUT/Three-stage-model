@@ -4,7 +4,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 import os
 import math
 import sys
@@ -20,8 +19,6 @@ with open(r'multi.yaml') as file:
     params = yaml.load(file, Loader=yaml.FullLoader)
     
 model_scenarios = return_model_scenarios()
-
-# In[ ]:
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--run_name', type=str, required=True, help="Name of the run")
@@ -55,11 +52,6 @@ parser.add_argument('--initial_sol_path', type=str, required=False, help = "path
 parser.add_argument('--mip_focus', type=str, required=False, help = "mip focus strategy")
 parser.add_argument('--cut_level', type=str, required=False, help = "cut aggresiveness")
 
-
-
-
-
-# In[ ]:
 # Parse the argument
 args = parser.parse_args()
 
@@ -110,7 +102,6 @@ if args.machine == "tacc":
 else:
     params["path_to_output"] = os.getcwd() + "/output/" + args.run_name + "/"        
 
-# In[ ]:
 params["path_to_input"] = os.getcwd() + "/data/192_Scenario/"
 if os.path.exists(params["path_to_output"]):
     print("The path exisits. Try a new directory name")
@@ -123,7 +114,6 @@ print("Creating model instance.")
 print("The number of mini-brent models is\t", len(model_scenarios.keys()))
 print("Number of scenarios per model is\t", len(model_scenarios[0]))
 
-# In[ ]:
 base_model = three_stage_model(params, model_scenarios)
 if args.mitigation_budget:
     base_model.model.addConstr(base_model.i_mitigation + base_model.i_preparedness <= args.mitigation_budget)
@@ -184,51 +174,37 @@ base_model.model.setParam("Threads", 10)
 ########################################################################################################
 ######################## Heuristic Intervention. Only code within this block is added ##################
 ########################################################################################################
-
 start_or_bound = "bound"
 params["type_of_heuristic_run"] = start_or_bound
 
 df, df_sub, df_flood = get_df_for_heuristic()
 flood_info = flood_info_generator(model_scenarios, df_flood)
-main_df = compute_load_shed_no_measure(flood_info, df_sub, model_scenarios, params, df_flood)
-
-prep_enough = main_df[(main_df["max_flood"] <= params["prep_level"])].copy()
-mit_enough = main_df[(main_df["max_flood"] > params["prep_level"])].copy()
-prep_enough = prep_enough[['voll_million', 'prepare_million', 'mitigate_million', 'max_flood']]
-mit_enough = mit_enough[['voll_million', 'prepare_million', 'mitigate_million', 'max_flood']]
-
-prep_enough = prep_cost_computer(prep_enough, flood_info, params, model_scenarios)
-mitigate, mit_enough = mit_cost_computer(mit_enough, params, flood_info, model_scenarios, df_flood, df_sub)
-
-prep_dict = heuristic(prep_enough, flood_info, df_flood, model_scenarios, params)
-mit_dict = heuristic(mit_enough, flood_info, df_flood, model_scenarios, params)
-rest_dict = tighten_model(df_sub, df_flood, flood_info, model_scenarios)
-
+path_str = "/work2/07346/ashukla/stampede2/ThreeStageModel/output/modified_td_voll_"
+heuristic_solution, rest_dict = post_process_heuristic_output([params["voll"]], flood_info, df_sub, 
+                                                              model_scenarios, params, df_flood)
 if start_or_bound == "bound":
-
-    ### for prep_dict
-    for i in prep_dict:
-        base_model.model.addConstr(base_model.x_mit[i] == int(math.ceil(prep_dict[i]["x_mit"]/params["mit_level"])), name="mitigation_heuristic_x_" + str(i))
-        base_model.model.addConstr(base_model.y_mit[i] == int(prep_dict[i]["y_mit"]), name="mitigation_heuristic_y_" + str(i))
+    for i in df_flood.index:
+        x_mit_value = heuristic_solution[params["voll"]][0][i]
+        base_model.model.addConstr(base_model.x_mit[i] == int(math.ceil(x_mit_value/params["mit_level"])), name="mitigation_heuristic_x_" + str(i))
+        if x_mit_value > 0:
+            base_model.model.addConstr(base_model.y_mit[i] == 1, name="mitigation_heuristic_y_" + str(i))
+        else:
+            base_model.model.addConstr(base_model.y_mit[i] == 0, name="mitigation_heuristic_y_" + str(i))
         for j in model_scenarios:
-            base_model.model.addConstr(base_model.x_prep[i,j] == int(math.ceil(prep_dict[i]["p_" + str(j)]/params["prep_level"])), name = "td_heuristic_p_" + str(i) + "_" + str(j))
-            base_model.model.addConstr(base_model.y_prep[i,j] == int(prep_dict[i]["q_" + str(j)]), name = "td_heuristic_q_" + str(i) + "_" + str(j))
-
-    ### for mit_dict
-    for i in mit_dict:
-        base_model.model.addConstr(base_model.x_mit[i] == int(math.ceil(mit_dict[i]["x_mit"]/params["mit_level"])), name="mitigation_heuristic_x_" + str(i))
-        base_model.model.addConstr(base_model.y_mit[i] == int(mit_dict[i]["y_mit"]), name="mitigation_heuristic_y_" + str(i))
-        for j in model_scenarios:
-            base_model.model.addConstr(base_model.x_prep[i,j] == int(math.ceil(mit_dict[i]["p_" + str(j)]/params["prep_level"])), name = "td_heuristic_p_" + str(i) + "_" + str(j))
-            base_model.model.addConstr(base_model.y_prep[i,j] == int(mit_dict[i]["q_" + str(j)]), name = "td_heuristic_q_" + str(i) + "_" + str(j))
+            x_prep_value = heuristic_solution[params["voll"]][1][str(i) + "_" + str(j)]
+            base_model.model.addConstr(base_model.x_prep[i,j] == int(math.ceil(x_prep_value/params["prep_level"])), name = "td_heuristic_p_" + str(i) + "_" + str(j))
+            if x_prep_value > 0:
+                base_model.model.addConstr(base_model.y_prep[i,j] == 1, name = "td_heuristic_q_" + str(i) + "_" + str(j))
+            else:
+                base_model.model.addConstr(base_model.y_prep[i,j] == 0, name = "td_heuristic_q_" + str(i) + "_" + str(j))
 
     ### for rest_dict
     for i in rest_dict:
-        base_model.model.addConstr(base_model.x_mit[i] == int(math.ceil(rest_dict[i]["x_mit"]/params["mit_level"])), name="mitigation_heuristic_x_" + str(i))
-        base_model.model.addConstr(base_model.y_mit[i] == int(rest_dict[i]["y_mit"]), name="mitigation_heuristic_y_" + str(i))
+        base_model.model.addConstr(base_model.x_mit[i] == int(math.ceil(rest_dict[i]["x_mit"]/params["mit_level"])), name="rest_mitigation_heuristic_x_" + str(i))
+        base_model.model.addConstr(base_model.y_mit[i] == int(rest_dict[i]["y_mit"]), name="rest_mitigation_heuristic_y_" + str(i))
         for j in model_scenarios:
-            base_model.model.addConstr(base_model.x_prep[i,j] == int(math.ceil(rest_dict[i]["p_" + str(j)]/params["prep_level"])), name = "td_heuristic_p_" + str(i) + "_" + str(j))
-            base_model.model.addConstr(base_model.y_prep[i,j] == int(rest_dict[i]["q_" + str(j)]), name = "td_heuristic_q_" + str(i) + "_" + str(j))
+            base_model.model.addConstr(base_model.x_prep[i,j] == int(math.ceil(rest_dict[i]["p_" + str(j)]/params["prep_level"])), name = "rest_td_heuristic_p_" + str(i) + "_" + str(j))
+            base_model.model.addConstr(base_model.y_prep[i,j] == int(rest_dict[i]["q_" + str(j)]), name = "rest_td_heuristic_q_" + str(i) + "_" + str(j))
 
 ########################################################################################################
 ########################################################################################################
