@@ -3,13 +3,13 @@
 #SBATCH -J heuristic_3000
 #SBATCH -o %x-%j.out
 #SBATCH -e %x-%j.err
-#SBATCH -p skx-normal
+#SBATCH -p normal
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH -t 5:30:00
 #SBATCH --mail-user=ashutosh.shukla@utexas.edu
 #SBATCH --mail-type=all
-#SBATCH -A DesignSafe-Corral
+#SBATCH -A Extreme-Weather-Even
 
 # setup
 # module load python3/3.7.0

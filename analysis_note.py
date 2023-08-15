@@ -10,7 +10,7 @@ prep_tech = [0,6,12,18,24]
 value_lister = []
 
 for prep_value in prep_tech:
-    main_path = "/work2/07346/ashukla/stampede2/ThreeStageModel/output/prep_" + str(prep_value) + "/"
+    main_path = "/work2/07346/ashukla/ls6/ThreeStageModel/output/prep_" + str(prep_value) + "/"
     with open(main_path + "model_params.json", 'r') as f:
         params = json.load(f)        
     with open(main_path + "model_scenarios.json", 'r') as f:

@@ -2,7 +2,7 @@
 
 import json
 import pandas as pd
-main_path = "/work2/07346/ashukla/stampede2/ThreeStageModel/output/modified_td_prep_" 
+main_path = "/work2/07346/ashukla/ls6/ThreeStageModel/output/modified_td_prep_" 
 
 variable_list = [18,24]
 data_list = []

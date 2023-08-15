@@ -4,7 +4,7 @@
 
 #SBATCH -o %x-%j.out
 #SBATCH -e %x-%j.err
-#SBATCH -p skx-normal
+#SBATCH -p normal
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH -t 36:30:00
@@ -29,4 +29,4 @@ python3 main_notebook.py --run_name modified_td_prep_0_1\
                          --td_cost 40000\
                          --operating_cost 10000\
                          --mip_focus 3\
-                         #--initial_sol_path /work2/07346/ashukla/stampede2/ThreeStageModel/output/modified_td_prep_18/solution.sol\
+                         #--initial_sol_path /work2/07346/ashukla/ls6/ThreeStageModel/output/modified_td_prep_18/solution.sol\

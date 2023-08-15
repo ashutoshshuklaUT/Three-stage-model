@@ -102,7 +102,7 @@ if args.first_stage_binary:
         params["first_stage_binary"] = False
 
 if args.machine == "tacc":
-    params["path_to_output"] = "/work2/07346/ashukla/stampede2/ThreeStageModel/output/" + args.run_name + "/"
+    params["path_to_output"] = "/work2/07346/ashukla/ls6/ThreeStageModel/output/" + args.run_name + "/"
 else:
     params["path_to_output"] = os.getcwd() + "/output/" + args.run_name + "/"        
 

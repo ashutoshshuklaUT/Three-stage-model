@@ -98,7 +98,7 @@ if args.first_stage_binary:
         params["first_stage_binary"] = False
 
 if args.machine == "tacc":
-    params["path_to_output"] = "/work2/07346/ashukla/stampede2/ThreeStageModel/output/" + args.run_name + "/"
+    params["path_to_output"] = "/work2/07346/ashukla/ls6/ThreeStageModel/output/" + args.run_name + "/"
 else:
     params["path_to_output"] = os.getcwd() + "/output/" + args.run_name + "/"        
 
@@ -179,7 +179,7 @@ params["type_of_heuristic_run"] = start_or_bound
 
 df, df_sub, df_flood = get_df_for_heuristic()
 flood_info = flood_info_generator(model_scenarios, df_flood)
-path_str = "/work2/07346/ashukla/stampede2/ThreeStageModel/output/modified_td_voll_"
+path_str = "/work2/07346/ashukla/ls6/ThreeStageModel/output/modified_td_voll_"
 heuristic_solution, rest_dict = post_process_heuristic_output([params["voll"]], flood_info, df_sub, 
                                                               model_scenarios, params, df_flood)
 if start_or_bound == "bound":
