@@ -1,0 +1,177 @@
+Path to output is:	 /work2/07346/ashukla/ls6/ThreeStageModel/output/modified_flexible_mit_12_voll_250/
+Creating model instance.
+The number of mini-brent models is	 54
+Number of scenarios per model is	 4
+Set parameter TokenServer to value "license02.tacc.utexas.edu"
+Set parameter MIPFocus to value 3
+Set parameter LogFile to value "/work2/07346/ashukla/ls6/ThreeStageModel/output/modified_flexible_mit_12_voll_250/log"
+Set parameter MIPGap to value 0.005
+Set parameter TimeLimit to value 165600
+Set parameter Method to value 2
+Set parameter NodefileStart to value 0.5
+Set parameter Threads to value 10
+Gurobi Optimizer version 10.0.2 build v10.0.2rc0 (linux64)
+
+CPU model: AMD EPYC 7763 64-Core Processor, instruction set [SSE2|AVX|AVX2]
+Thread count: 128 physical cores, 128 logical processors, using up to 10 threads
+
+Optimize a model with 3551352 rows, 1101573 columns and 9914179 nonzeros
+Model fingerprint: 0x9f1c84a8
+Variable types: 755788 continuous, 345785 integer (306326 binary)
+Coefficient statistics:
+  Matrix range     [1e-03, 6e+05]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [1e+00, 3e+00]
+  RHS range        [1e-02, 1e+05]
+Presolve removed 2802232 rows and 436288 columns (presolve time = 5s) ...
+Presolve removed 3045334 rows and 681118 columns (presolve time = 10s) ...
+Presolve removed 3076522 rows and 700568 columns (presolve time = 15s) ...
+Presolve removed 3124524 rows and 706511 columns (presolve time = 21s) ...
+Presolve removed 3124524 rows and 706511 columns
+Presolve time: 23.42s
+Presolved: 426828 rows, 395062 columns, 1558904 nonzeros
+Variable types: 290964 continuous, 104098 integer (84187 binary)
+Root relaxation presolve removed 81642 rows and 60453 columns
+Root relaxation presolved: 345186 rows, 334609 columns, 1372722 nonzeros
+
+Root barrier log...
+
+Ordering time: 2.69s
+Elapsed ordering time = 5s
+Ordering time: 8.21s
+
+Barrier statistics:
+ AA' NZ     : 2.624e+07
+ Factor NZ  : 1.360e+08 (roughly 1.4 GB of memory)
+ Factor Ops : 5.704e+11 (roughly 3 seconds per iteration)
+ Threads    : 9
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -9.48055746e+11 -2.40080085e+12  2.00e+04 1.48e+05  8.23e+07    42s
+   1  -6.14043848e+11 -2.26186806e+12  1.29e+04 5.19e+05  5.37e+07    44s
+   2  -3.56592012e+11 -1.90688886e+12  6.25e+03 7.57e+04  3.13e+07    45s
+   3  -5.47826876e+09 -1.18736694e+12  4.03e+00 8.81e-08  2.03e+06    47s
+   4   1.60302303e+09 -4.92459703e+11  5.31e-01 2.50e-08  6.33e+05    48s
+   5   2.18764801e+09 -4.75755796e+10  2.76e-02 6.63e-08  5.86e+04    50s
+   6   1.15767175e+09 -7.78797458e+09  1.26e-03 1.56e-08  1.04e+04    52s
+   7   3.02924351e+08 -8.34372646e+08  4.68e-05 1.40e-09  1.32e+03    55s
+   8   2.74338971e+08 -3.71454772e+08  3.36e-05 6.98e-10  7.51e+02    58s
+   9   2.01214538e+08 -9.50615894e+07  2.28e-05 6.38e-10  3.44e+02    61s
+  10   1.57943251e+08  7.51625814e+06  1.63e-05 3.49e-10  1.75e+02    63s
+  11   9.48526528e+07  3.41882987e+07  6.25e-06 4.66e-10  7.05e+01    66s
+  12   8.67714932e+07  4.23016895e+07  5.04e-06 4.66e-10  5.17e+01    68s
+  13   8.21135130e+07  4.28963853e+07  4.35e-06 7.59e-10  4.56e+01    70s
+  14   7.96584043e+07  4.44715568e+07  3.98e-06 6.37e-10  4.09e+01    73s
+  15   7.40926235e+07  4.75308395e+07  3.26e-06 3.49e-10  3.09e+01    75s
+  16   6.56830997e+07  4.95673079e+07  2.00e-06 3.49e-10  1.87e+01    78s
+  17   6.28531760e+07  5.04559340e+07  1.62e-06 3.49e-10  1.44e+01    80s
+  18   6.01110253e+07  5.08856757e+07  1.26e-06 2.33e-10  1.07e+01    83s
+  19   5.85504627e+07  5.12568180e+07  1.02e-06 4.66e-10  8.48e+00    86s
+  20   5.73345951e+07  5.14567539e+07  8.29e-07 3.49e-10  6.83e+00    89s
+  21   5.65383997e+07  5.17442953e+07  7.09e-07 4.66e-10  5.57e+00    91s
+  22   5.57396318e+07  5.19791031e+07  5.90e-07 3.49e-10  4.37e+00    94s
+  23   5.52067760e+07  5.20894968e+07  4.92e-07 2.94e-10  3.62e+00    96s
+  24   5.42639755e+07  5.22121044e+07  3.28e-07 4.66e-10  2.39e+00    99s
+  25   5.40113221e+07  5.22817877e+07  2.88e-07 5.82e-10  2.01e+00   101s
+  26   5.34282085e+07  5.23490604e+07  1.76e-07 2.33e-10  1.25e+00   104s
+  27   5.31898349e+07  5.23738423e+07  1.30e-07 3.49e-10  9.49e-01   107s
+  28   5.29443576e+07  5.24256651e+07  8.27e-08 3.49e-10  6.03e-01   109s
+  29   5.28485341e+07  5.24376716e+07  6.59e-08 2.33e-10  4.78e-01   112s
+  30   5.27814893e+07  5.24649467e+07  5.37e-08 4.66e-10  3.68e-01   114s
+  31   5.26964381e+07  5.24891505e+07  3.87e-08 3.49e-10  2.41e-01   117s
+  32   5.26070226e+07  5.24980814e+07  2.04e-08 4.66e-10  1.27e-01   120s
+  33   5.25744605e+07  5.25022767e+07  1.37e-08 4.66e-10  8.39e-02   122s
+  34   5.25628160e+07  5.25039026e+07  1.12e-08 2.86e-10  6.85e-02   125s
+  35   5.25548761e+07  5.25059155e+07  9.58e-09 5.82e-10  5.69e-02   127s
+  36   5.25423567e+07  5.25088041e+07  7.51e-09 4.66e-10  3.90e-02   130s
+  37   5.25308680e+07  5.25106245e+07  1.17e-08 2.33e-10  2.35e-02   133s
+  38   5.25252446e+07  5.25114167e+07  1.01e-08 2.33e-10  1.61e-02   135s
+  39   5.25204524e+07  5.25120213e+07  5.82e-09 3.49e-10  9.80e-03   138s
+  40   5.25159144e+07  5.25127617e+07  2.27e-09 3.49e-10  3.67e-03   141s
+  41   5.25143828e+07  5.25131546e+07  8.41e-10 5.82e-10  1.43e-03   144s
+  42   5.25137525e+07  5.25133803e+07  2.78e-10 3.49e-10  4.33e-04   147s
+  43   5.25136204e+07  5.25134997e+07  3.05e-08 3.49e-10  1.40e-04   150s
+  44   5.25135800e+07  5.25135301e+07  1.20e-07 4.66e-10  5.80e-05   153s
+  45   5.25135754e+07  5.25135316e+07  1.05e-07 4.66e-10  5.09e-05   156s
+
+Barrier solved model in 45 iterations and 156.19 seconds (193.39 work units)
+Optimal objective 5.25135754e+07
+
+
+Root crossover log...
+
+   99076 DPushes remaining with DInf 0.0000000e+00               157s
+    4131 DPushes remaining with DInf 0.0000000e+00               160s
+       0 DPushes remaining with DInf 0.0000000e+00               165s
+
+Restart crossover...
+
+   99087 DPushes remaining with DInf 0.0000000e+00               167s
+    9567 DPushes remaining with DInf 0.0000000e+00               170s
+    1651 DPushes remaining with DInf 0.0000000e+00               175s
+       0 DPushes remaining with DInf 1.0232678e-04               178s
+
+   36465 PPushes remaining with PInf 1.2937090e+04               178s
+   19276 PPushes remaining with PInf 1.1119640e+04               181s
+   14570 PPushes remaining with PInf 1.1055134e+04               186s
+   11393 PPushes remaining with PInf 1.0682189e+04               191s
+    2797 PPushes remaining with PInf 9.7359864e+03               199s
+       0 PPushes remaining with PInf 9.4309990e+03               202s
+
+  Push phase complete: Pinf 9.4309990e+03, Dinf 1.8780839e+02    202s
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+   51183    5.2513543e+07   0.000000e+00   1.878084e+02    203s
+   52102    5.2513543e+07   0.000000e+00   0.000000e+00    208s
+   52102    5.2513543e+07   0.000000e+00   0.000000e+00    212s
+
+Root relaxation: objective 5.251354e+07, 52102 iterations, 185.43 seconds (292.20 work units)
+Total elapsed time = 224.10s
+Total elapsed time = 273.05s
+Total elapsed time = 278.86s
+Total elapsed time = 283.86s
+Total elapsed time = 287.13s
+Total elapsed time = 298.78s
+Total elapsed time = 306.92s
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 5.2514e+07    0 3675          - 5.2514e+07      -     -  312s
+H    0     0                    1.835641e+08 5.2514e+07  71.4%     -  345s
+     0     0 6.0466e+07    0 3691 1.8356e+08 6.0466e+07  67.1%     - 1826s
+H    0     0                    7.843535e+07 6.0466e+07  22.9%     - 2206s
+     0     0 6.1229e+07    0 3496 7.8435e+07 6.1229e+07  21.9%     - 2473s
+     0     0 6.1241e+07    0 3406 7.8435e+07 6.1241e+07  21.9%     - 2611s
+     0     0 6.1242e+07    0 3422 7.8435e+07 6.1242e+07  21.9%     - 2674s
+     0     0 6.1816e+07    0 3101 7.8435e+07 6.1816e+07  21.2%     - 3935s
+H    0     0                    7.471316e+07 6.1816e+07  17.3%     - 4049s
+H    0     0                    7.399316e+07 6.1816e+07  16.5%     - 4049s
+     0     0 6.1863e+07    0 2945 7.3993e+07 6.1863e+07  16.4%     - 4098s
+     0     0 6.1864e+07    0 3155 7.3993e+07 6.1864e+07  16.4%     - 4198s
+     0     0 6.1925e+07    0 3130 7.3993e+07 6.1925e+07  16.3%     - 4663s
+H    0     0                    7.284251e+07 6.1925e+07  15.0%     - 4856s
+     0     0 6.1926e+07    0 3258 7.2843e+07 6.1926e+07  15.0%     - 5026s
+     0     0 6.1962e+07    0 3119 7.2843e+07 6.1962e+07  14.9%     - 5598s
+H    0     0                    7.281751e+07 6.1962e+07  14.9%     - 5626s
+     0     0 6.1962e+07    0 3290 7.2818e+07 6.1962e+07  14.9%     - 5863s
+     0     0 6.1968e+07    0 3093 7.2818e+07 6.1968e+07  14.9%     - 6601s
+     0     0 6.1968e+07    0 3141 7.2818e+07 6.1968e+07  14.9%     - 6752s
+     0     0 6.1972e+07    0 3216 7.2818e+07 6.1972e+07  14.9%     - 7164s
+     0     0 6.1972e+07    0 3289 7.2818e+07 6.1972e+07  14.9%     - 7349s
+     0     0 6.1983e+07    0 3229 7.2818e+07 6.1983e+07  14.9%     - 7929s
+     0     0 6.1986e+07    0 3239 7.2818e+07 6.1986e+07  14.9%     - 8199s
+     0     0 6.1987e+07    0 3386 7.2818e+07 6.1987e+07  14.9%     - 8288s
+     0     0 6.1994e+07    0 3231 7.2818e+07 6.1994e+07  14.9%     - 8719s
+     0     0 6.1994e+07    0 3221 7.2818e+07 6.1994e+07  14.9%     - 9160s
+     0     0 6.1994e+07    0 2947 7.2818e+07 6.1994e+07  14.9%     - 9798s
+     0     0 6.1994e+07    0 2995 7.2818e+07 6.1994e+07  14.9%     - 10579s
+     0     0 6.1994e+07    0 3297 7.2818e+07 6.1994e+07  14.9%     - 10942s
+     0     0 6.1994e+07    0 3222 7.2818e+07 6.1994e+07  14.9%     - 11041s
+     0     0 6.1995e+07    0 3321 7.2818e+07 6.1995e+07  14.9%     - 11290s
+     0     0 6.2011e+07    0 2891 7.2818e+07 6.2011e+07  14.8%     - 12373s
+     0     0 6.2012e+07    0 3035 7.2818e+07 6.2012e+07  14.8%     - 12893s

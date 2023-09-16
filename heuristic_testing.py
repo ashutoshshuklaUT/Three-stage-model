@@ -222,5 +222,3 @@ with open(params["path_to_output"] + 'model_params.json', 'w') as fp:
     
 with open(params["path_to_output"] + 'model_scenarios.json', 'w') as fp:
     json.dump(model_scenarios, fp)
-
-

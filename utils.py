@@ -37,7 +37,6 @@ def return_model_scenarios():
                 counter = counter + 1
     return model_scenarios
 
-
 def filter_col_creater(model_scenarios):
     lister = []
     for i in model_scenarios:
