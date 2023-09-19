@@ -17,22 +17,43 @@ def prepare_input(path_str):
     input2["RATE_A"] = input2["RATE_A"]/100
     return input1, input2
 
+# def return_model_scenarios():
+#     directions = ["w", "wnw", "nw", "nnw", "n", "nne"]
+#     categories = ["2", "3", "4", "5"]
+#     forward_speeds = ["05", "10", "15", "25"]
+#     model_scenarios = {}
+#     counter = 0
+#     for i in directions:
+#         for j in range(len(categories)-1):
+#             for k in range(len(forward_speeds)-1):
+#                 lister = []
+#                 lister.append("max_flood_level_" + i +"_" + categories[j] + "_" + forward_speeds[k])
+#                 lister.append("max_flood_level_" + i +"_" + categories[j] + "_" + forward_speeds[k+1])
+#                 #lister.append("max_flood_level_" + i +"_" + categories[j] + "_" + forward_speeds[k+2])
+#                 lister.append("max_flood_level_" + i +"_" + categories[j+1] + "_" + forward_speeds[k])
+#                 lister.append("max_flood_level_" + i +"_" + categories[j+1] + "_" + forward_speeds[k+1])
+#                 #lister.append("max_flood_level_" + i +"_" + categories[j+1] + "_" + forward_speeds[k+2])
+#                 model_scenarios[counter] = lister
+#                 counter = counter + 1
+#     return model_scenarios
+
+
 def return_model_scenarios():
-    directions = ["w", "wnw", "nw", "nnw", "n", "nne"]
-    categories = ["2", "3", "4", "5"]
-    forward_speeds = ["05", "10", "15", "25"]
+    directions = ["nw"]
+    categories = ["2"]
+    forward_speeds = ["05", "10"]
     model_scenarios = {}
     counter = 0
     for i in directions:
-        for j in range(len(categories)-1):
+        for j in range(len(categories)):
             for k in range(len(forward_speeds)-1):
                 lister = []
                 lister.append("max_flood_level_" + i +"_" + categories[j] + "_" + forward_speeds[k])
                 lister.append("max_flood_level_" + i +"_" + categories[j] + "_" + forward_speeds[k+1])
                 #lister.append("max_flood_level_" + i +"_" + categories[j] + "_" + forward_speeds[k+2])
-                lister.append("max_flood_level_" + i +"_" + categories[j+1] + "_" + forward_speeds[k])
-                lister.append("max_flood_level_" + i +"_" + categories[j+1] + "_" + forward_speeds[k+1])
-                #lister.append("max_flood_level_" + i +"_" + categories[j+1] + "_" + forward_speeds[k+2])
+                # lister.append("max_flood_level_" + i +"_" + categories[j+1] + "_" + forward_speeds[k])
+                # lister.append("max_flood_level_" + i +"_" + categories[j+1] + "_" + forward_speeds[k+1])
+                # #lister.append("max_flood_level_" + i +"_" + categories[j+1] + "_" + forward_speeds[k+2])
                 model_scenarios[counter] = lister
                 counter = counter + 1
     return model_scenarios

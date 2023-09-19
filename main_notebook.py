@@ -141,10 +141,10 @@ if args.coordination:
     for i in base_model.substation_info:
         if base_model.x_mit[i].X > 0:
             base_model.model.addConstr(base_model.x_mit[i] == base_model.x_mit[i].X)
-            base_model.model.addConstr(base_model.y_mit[i] == 1)
+            # base_model.model.addConstr(base_model.y_mit[i] == 1)
         else:
             base_model.model.addConstr(base_model.x_mit[i] == 0)
-            base_model.model.addConstr(base_model.y_mit[i] == 0)
+            # base_model.model.addConstr(base_model.y_mit[i] == 0)
 
 if args.initial_sol_path:
     params["initial_sol_path"] = args.initial_sol_path

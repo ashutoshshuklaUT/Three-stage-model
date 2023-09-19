@@ -4,18 +4,17 @@
 tau: 10
 
 # Cost structure parameters for mitigation decisions
-fixed_cost: 25000
+fixed_cost: 0
 variable_cost: 100000
 
 # Cost structure parameters for preparedness decisions
-td_cost: 80000
+td_cost: 40000
 
 # Cost structure parameters for preparedness operating budget
 operating_cost: 10000
 
 # False implies that we need to use generators from all operational nodes
 flexible_generation: True
-
 first_stage_binary: False
 
 # Parameters for the power system model
@@ -30,8 +29,8 @@ big_m: 50000
 restore_time: 48
 voll: 6000
 
-mit_level: 1
-prep_level: 6
+mit_level: 6
+prep_level: 3
 
 
 # Solver Parameters

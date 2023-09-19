@@ -50,10 +50,6 @@ class three_stage_model:
         
         self.create_model()
         self.stage_one_constraints()
-
-        if self.first_stage_binary:
-            self.stage_one_binary()
-
         self.linking_constraints()
         self.dc_constraints()
         self.slack_bus_phase_angle()
@@ -74,12 +70,9 @@ class three_stage_model:
 
         self.td_units = self.model.addVar(vtype=GRB.INTEGER, lb=0, ub=GRB.INFINITY, name="td_units")
 
-        self.y_mit = self.model.addVars(self.substations, vtype=GRB.BINARY, name="y_mit")
         self.x_mit = self.model.addVars(self.substations, lb=0, ub=int(self.max_mit/self.mit_level), vtype=GRB.INTEGER, name="x_mit")
-        
         self.y_prep = self.model.addVars(self.substations, np.arange(self.n_models), vtype=GRB.BINARY, name="y_prep")
         self.x_prep = self.model.addVars(self.substations, np.arange(self.n_models), lb=0, ub=int(self.max_prep/self.prep_level), vtype=GRB.INTEGER, name="x_prep")
-        
         self.max_x = self.model.addVars(self.substations, np.arange(self.n_models), vtype=GRB.INTEGER, name="max_x")
 
         self.z = self.model.addVars(np.arange(self.n_buses), np.arange(self.n_scenario), np.arange(self.n_models), vtype=GRB.BINARY, name="z")
@@ -93,12 +86,8 @@ class three_stage_model:
         self.edge = self.model.addVars(np.arange(self.n_branches), np.arange(self.n_scenario), np.arange(self.n_models), lb= -GRB.INFINITY, ub=GRB.INFINITY, vtype=GRB.CONTINUOUS, name="edge")
 
     def stage_one_constraints(self):
-        self.model.addConstrs((self.mit_level*self.x_mit[i] <= self.max_mit*self.y_mit[i] for i in self.substation_info), name = "mitigation_constraint")
         self.model.addConstrs((self.prep_level*self.x_prep[i,m] <= self.max_prep*self.y_prep[i,m] for m in range(self.n_models) for i in self.substation_info), name="preparedness_constraint")
         self.model.addConstrs((self.prep_level*self.x_prep.sum('*', m) <= self.td_units for m in range(self.n_models)), name="tiger_dam_limit")
-
-    def stage_one_binary(self):
-        self.model.addConstrs((self.mit_level*self.x_mit[i] == self.substation_info[i]*self.y_mit[i] for i in self.substation_info), name="binary_first_stage")
 
     def linking_constraints(self):
         for m in range(self.n_models):
@@ -110,12 +99,13 @@ class three_stage_model:
                     threat = input1[j,9+k]
                     mitigation = self.x_mit[self.bus_info[j]]*self.mit_level
                     preparedness = self.x_prep[self.bus_info[j],m]*self.prep_level
-                    self.model.addConstr(1 - self.z[j,k,m] >= (threat - self.max_x[self.bus_info[j],m])/35, name="linking_1" + str(m) + str(k) + str(j))
-                    self.model.addConstr(self.z[j,k,m] >= (self.max_x[self.bus_info[j],m] - threat + 0.5)/35, name="linking_2" + str(m) + str(k) + str(j))
+                    self.model.addConstr(1 - self.z[j,k,m] >= (threat - self.max_x[self.bus_info[j],m])/self.substation_info[self.bus_info[j]], name="linking_1" + str(m) + str(k) + str(j))
+                    self.model.addConstr(self.z[j,k,m] >= (self.max_x[self.bus_info[j],m] - threat + 0.5)/(self.max_mit + 1), name="linking_2" + str(m) + str(k) + str(j))
+                    
                     self.model.addConstr(self.max_x[self.bus_info[j],m] >= mitigation, name="reformulation_1" + str(m) + str(k) + str(j))
                     self.model.addConstr(self.max_x[self.bus_info[j],m] >= preparedness, name="reformulation_2" + str(m) + str(k) + str(j))
-                    self.model.addConstr(self.max_x[self.bus_info[j],m] <= mitigation + 25*self.y_prep[self.bus_info[j],m], name="reformulation_3" + str(m) + str(k) + str(j))
-                    self.model.addConstr(self.max_x[self.bus_info[j],m] <= preparedness + 25*(1-self.y_prep[self.bus_info[j],m]), name="reformulation_4" + str(m) + str(k) + str(j))       
+                    self.model.addConstr(self.max_x[self.bus_info[j],m] <= mitigation + 24*self.y_prep[self.bus_info[j],m], name="reformulation_3" + str(m) + str(k) + str(j))
+                    self.model.addConstr(self.max_x[self.bus_info[j],m] <= preparedness + 24*(1-self.y_prep[self.bus_info[j],m]), name="reformulation_4" + str(m) + str(k) + str(j))       
                     # Supply and demand constraints
                     self.model.addConstr(self.s[j,k,m] <= self.z[j,k,m]*input1[j,8])
                     if self.flexible_generation:
@@ -171,7 +161,7 @@ class three_stage_model:
     def mitigation_cost(self):
         mitigation_cost = 0
         for i in self.substation_info:
-            mitigation_cost = mitigation_cost + self.fixed_cost*self.y_mit[i] + self.variable_cost*self.x_mit[i]*self.mit_level
+            mitigation_cost = mitigation_cost + self.variable_cost*self.x_mit[i]*self.mit_level
         self.model.addConstr(self.i_mitigation == mitigation_cost, name="mitigation_budget_main_constraint")
 
     def td_acquisition_cost(self):
