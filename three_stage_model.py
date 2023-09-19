@@ -51,11 +51,9 @@ class three_stage_model:
         self.create_model()
         self.stage_one_constraints()
 
-        if self.first_stage_binary:
-            self.stage_one_binary()
+        # if self.first_stage_binary:
+        #     self.stage_one_binary()
         
-            
-
         self.linking_constraints()
         self.dc_constraints()
         self.slack_bus_phase_angle()
@@ -68,6 +66,7 @@ class three_stage_model:
         self.objective_function()
 
     def create_model(self):
+        
         self.model = gp.Model("base_model")
         self.i_oc = self.model.addVar(vtype=GRB.CONTINUOUS, lb=0, ub=GRB.INFINITY, name="i_oc")
         self.i_voll = self.model.addVar(vtype=GRB.CONTINUOUS, lb=0, ub=GRB.INFINITY, name="i_voll")
