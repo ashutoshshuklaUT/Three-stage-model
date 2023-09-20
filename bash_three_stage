@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J modified_td_prep_flexible_12_voll_250
+#SBATCH -J max_prep_12
 #SBATCH -o %x-%j.out
 #SBATCH -e %x-%j.err
 #SBATCH -p normal
@@ -18,15 +18,11 @@
 cd ${HOME}/ThreeStageModel
 
 #run the python script
-python3 main_notebook.py --run_name modified_td_prep_flexible_12_voll_250\
+python3 main_notebook.py --run_name final_max_prep_12\
                          --machine tacc\
                          --mip_gap 0.005\
                          --time_limit 165600\
                          --first_stage_binary false\
-                         --max_prep 12\
-                         --prep_level 6\
-                         --td_cost 40000\
-                         --operating_cost 10000\
                          --mip_focus 3\
-                         --voll 250\
-                         #--initial_sol_path /work2/07346/ashukla/ls6/ThreeStageModel/output/modified_td_voll_500/solution.sol\
+                         --voll 6000\
+                         --max_prep 24\
