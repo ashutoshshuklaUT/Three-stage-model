@@ -20,6 +20,7 @@ model_scenarios = return_model_scenarios()
 # In[ ]:
 parser = argparse.ArgumentParser()
 
+parser.add_argument('--message', type=str, required=True, help="Details about the runs")
 parser.add_argument('--run_name', type=str, required=True, help="Name of the run")
 parser.add_argument('--machine', type=str, required=True, help = "Machine Type")
 
@@ -185,6 +186,7 @@ params["i_mitigation"] = base_model.i_mitigation.X
 params["i_preparedness"] = base_model.i_preparedness.X
 params["i_oc"] = base_model.i_oc.X
 params["i_voll"] = base_model.i_voll.X
+params["message"]: args.message
 
 # In[ ]:
 with open(params["path_to_output"] + 'model_params.json', 'w') as fp:
