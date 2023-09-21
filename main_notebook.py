@@ -59,6 +59,7 @@ parser.add_argument('--cut_level', type=str, required=False, help = "cut aggresi
 # Parse the argument
 args = parser.parse_args()
 
+
 if args.fixed_cost:
     params["fixed_cost"] = args.fixed_cost
 if args.variable_cost:
