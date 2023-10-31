@@ -7,10 +7,10 @@ from utils import *
 from three_stage_model import *
 
 prep_tech = [0,6,12,18,24]
-value_lister = []
+value_lister = [250,500,1000,2000,3000,4000,5000,6000]
 
-for prep_value in prep_tech:
-    main_path = "/work2/07346/ashukla/ls6/ThreeStageModel/output/prep_" + str(prep_value) + "/"
+for prep_value in value_lister:
+    main_path = "/work2/07346/ashukla/ls6/ThreeStageModel/output/granular_voll_" + str(prep_value) + "/"
     with open(main_path + "model_params.json", 'r') as f:
         params = json.load(f)        
     with open(main_path + "model_scenarios.json", 'r') as f:
@@ -33,4 +33,4 @@ for prep_value in prep_tech:
                          base_model.model.getVarByName('i_preparedness').Start/1e6))
     
 print(pd.DataFrame(value_lister))
-pd.DataFrame(value_lister).to_csv("temp_file_prep_tech.csv")
+pd.DataFrame(value_lister).to_csv("objective_function_decomposed.csv")
