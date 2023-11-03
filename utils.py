@@ -69,3 +69,18 @@ def node_matrix(input1, input2):
             node_edge_dictionary[tail].append(i)
     return node_arc_incidence_matrix, node_edge_dictionary
 
+# The below case is for the case of perfect prediction
+# def return_model_scenarios():
+#     directions = ["w", "wnw", "nw", "nnw", "n", "nne"]
+#     categories = ["2", "3", "4", "5"]
+#     forward_speeds = ["05", "10", "15", "25"]
+#     model_scenarios = {}
+#     counter = 0
+#     for i in directions:
+#         for j in range(len(categories)):
+#             for k in range(len(forward_speeds)):
+#                 lister = []
+#                 lister.append("max_flood_level_" + i +"_" + categories[j] + "_" + forward_speeds[k])
+#                 model_scenarios[counter] = lister
+#                 counter = counter + 1
+#     return model_scenarios

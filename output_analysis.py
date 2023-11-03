@@ -5,7 +5,7 @@ import pandas as pd
 main_path = "/work2/07346/ashukla/ls6/ThreeStageModel/output/vc_"
 
 # variable_list = [250,500,1000,2000,3000,4000,5000,6000]
-# variable_list = [25,50,75]
+variable_list = [25,50,75]
 
 data_list = []
 

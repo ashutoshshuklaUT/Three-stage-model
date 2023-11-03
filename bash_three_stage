@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J max_p_g_21
+#SBATCH -J granular_perfect_prediction
 #SBATCH -o %x-%j.out
 #SBATCH -e %x-%j.err
 #SBATCH -p normal
@@ -17,7 +17,7 @@
 cd ${HOME}/ThreeStageModel
 
 #run the python script
-python3 main_notebook.py --run_name max_prep_granular_21\
+python3 main_notebook.py --run_name granular_perfect_prediction\
                          --machine tacc\
                          --mip_gap 0.005\
                          --time_limit 165600\
@@ -26,5 +26,5 @@ python3 main_notebook.py --run_name max_prep_granular_21\
                          --voll 6000\
                          --max_mit 21\
                          --mit_level 3\
-                         --max_prep 21\
-                         --message made_hardening_levels_more_granular_and_increasing_max_prep
+                         --max_prep 6\
+                         --prep_level 3
