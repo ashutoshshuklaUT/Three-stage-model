@@ -20,7 +20,7 @@ model_scenarios = return_model_scenarios()
 # In[ ]:
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--message', type=str, required=True, help="Details about the runs")
+parser.add_argument('--message', type=str, required=False, help="Details about the runs")
 parser.add_argument('--run_name', type=str, required=True, help="Name of the run")
 parser.add_argument('--machine', type=str, required=True, help = "Machine Type")
 
