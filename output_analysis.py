@@ -2,10 +2,10 @@
 
 import json
 import pandas as pd
-main_path = "/work2/07346/ashukla/ls6/ThreeStageModel/output/vc_"
+main_path = "/work2/07346/ashukla/ls6/ThreeStageModel/output/perfect_prediction_"
 
-# variable_list = [250,500,1000,2000,3000,4000,5000,6000]
-variable_list = [25,50,75]
+variable_list = [250,500,1000,2000,3000,4000,5000]
+# variable_list = [25,50,75]
 
 data_list = []
 
@@ -25,4 +25,5 @@ df["Total"] = df.sum(axis=1)
 df = df.round(2)
 df.index = variable_list
 df.index.name = "VOLL"
-df.to_csv("vc_k.csv")
+df.to_csv("perfect_prediction_summary.csv")
+print(df.to_latex())

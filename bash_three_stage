@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J granular_oc_20
+#SBATCH -J perfect_prediction_5000
 #SBATCH -o %x-%j.out
 #SBATCH -e %x-%j.err
 #SBATCH -p normal
@@ -17,15 +17,14 @@
 cd ${HOME}/ThreeStageModel
 
 #run the python script
-python3 main_notebook.py --run_name granular_oc_20\
+python3 main_notebook.py --run_name perfect_prediction_5000\
                          --machine tacc\
                          --mip_gap 0.005\
                          --time_limit 165600\
                          --first_stage_binary false\
                          --mip_focus 3\
-                         --voll 6000\
+                         --voll 5000\
                          --max_mit 21\
                          --mit_level 3\
                          --max_prep 6\
-                         --prep_level 3\
-                         --operating_cost 20000
+                         --prep_level 3
