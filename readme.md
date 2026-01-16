@@ -14,5 +14,5 @@ This code implements a three-stage stochastic mixed-integer programming model th
 - **Budget allocation** - Determines optimal split between long-term and short-term resilience measures
 - **Comprehensive sensitivity analysis** - Effects of VOLL, restoration time, Tiger Dam effectiveness, and hardening costs
 
-## Installation
-```bash
+## Paper link
+https://www.sciencedirect.com/science/article/abs/pii/S2352467725003558
